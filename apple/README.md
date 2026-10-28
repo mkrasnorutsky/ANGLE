@@ -39,3 +39,5 @@ python3 apple/scripts/package_release.py --tag 0.2.0
 This creates two ZIP archives, SHA-256 checksums, and `dist/Package.swift` with immutable GitHub release URLs. Upload the ZIP files to that tag's GitHub release, replace the root manifest with the generated manifest and commit/tag that distribution revision. Preserve `apple/SPM` at that revision. Never replace archive contents under an existing release tag: checksums are immutable. The reusable local-path template remains in `apple/Package.local.swift`.
 
 All original ANGLE licenses and third-party license notices remain in the source tree. Distribution frameworks include ANGLE's root LICENSE; downstream distributions must retain applicable third-party notices as well.
+
+Version 0.1.1 removes mirrored Git submodule entries from the package checkout so SPM does not recursively clone build dependencies. Source builds still use the pinned DEPS file and bootstrap script. The validated 0.1.0 XCFramework archives remain unchanged.
