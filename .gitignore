@@ -153,3 +153,10 @@ TestResults.qpa
 
 # Any temporary files will confuse code generation.
 !scripts/code_generation_hashes/*
+
+# Apple distribution outputs and local build tools
+/.build-tools/
+/.build/
+/.swiftpm/
+/dist/
+/_bad_scm/

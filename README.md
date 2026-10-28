@@ -1,5 +1,7 @@
 # ANGLE - Almost Native Graphics Layer Engine
 
+**Apple builds:** see [iOS XCFrameworks and Swift Package Manager](apple/README.md). Builds include arm64 devices and arm64/x86_64 Simulator.
+
 The goal of ANGLE is to allow users of multiple operating systems to seamlessly run WebGL and other
 OpenGL ES content by translating OpenGL ES API calls to one of the hardware-supported APIs available
 for that platform. ANGLE currently provides translation from OpenGL ES 2.0, 3.0 and 3.1 to Vulkan,

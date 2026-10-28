@@ -1,0 +1,25 @@
+name: Apple XCFrameworks
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned ANGLE dependencies
+        run: apple/scripts/bootstrap.sh
+      - name: Build arm64 device and arm64 + x86_64 Simulator
+        run: python3 apple/scripts/build_xcframeworks.py --jobs 3
+      - name: Validate every architecture and public module
+        run: python3 apple/scripts/validate_xcframeworks.py
+      - name: Upload XCFrameworks
+        uses: actions/upload-artifact@v4
+        with:
+          name: ANGLE-iOS-XCFrameworks
+          path: |
+            dist/libEGL.xcframework
+            dist/libGLESv2.xcframework
+            dist/build-manifest.json
