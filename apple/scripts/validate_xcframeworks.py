@@ -30,7 +30,10 @@ for environment, architectures in [('device', ['arm64'])] + ([] if a.device_only
     for arch in architectures:
         triple = f'{arch}-apple-ios18.0' + ('-simulator' if environment == 'simulator' else '')
         with tempfile.TemporaryDirectory(prefix='angle-modules-') as cache:
+            client = Path(cache) / 'client.c'
+            client.write_text('#include "ANGLE.h"\nint main(void) { return (int)eglGetError() + (int)glGetError(); }\n')
             subprocess.run(['xcrun', 'clang', '-target', triple, '-isysroot', sdk, '-fmodules', '-fmodules-cache-path=' + cache,
                 '-F' + str(frameworks['libEGL'][environment]), '-F' + str(frameworks['libGLESv2'][environment]),
-                '-I' + str(ROOT / 'apple/SPM/include'), '-fsyntax-only', str(ROOT / 'apple/SPM/ANGLE.c')], check=True)
-print('PASS: slices, platforms, framework IDs and public headers/modules')
+                '-I' + str(ROOT / 'apple/SPM/include'), str(client), '-framework', 'libEGL', '-framework', 'libGLESv2',
+                '-o', str(Path(cache) / 'client')], check=True)
+print('PASS: slices, platforms, framework IDs and public headers/modules and linked clients')

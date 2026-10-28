@@ -1,0 +1,12 @@
+{
+  "angle_upstream_revision": "dbd678c224bb034ac569a23f83ceba359b4a66ca",
+  "depot_tools_revision": "b86fc981b72ab966f8260f73b4eca600b3b12677",
+  "minimum_ios": "18.0",
+  "device_architectures": [
+    "arm64"
+  ],
+  "simulator_architectures": [
+    "arm64",
+    "x86_64"
+  ]
+}
