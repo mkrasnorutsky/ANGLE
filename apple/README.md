@@ -22,7 +22,7 @@ A manually triggered GitHub Actions workflow builds and validates the same three
 
 ## Use locally with SPM
 
-After building the XCFrameworks, add this repository folder as a local package in Xcode and select the **ANGLE** product. The product includes EGL and GLES modules and exports their public headers through `ANGLE.h`. Do not also manually link the old frameworks. The root manifest intentionally uses local binary paths; a fresh clone must build artifacts before resolving this local package.
+After building the XCFrameworks, copy `apple/Package.local.swift` to `Package.swift`, then add this repository folder as a local package in Xcode and select the **ANGLE** product. The product includes EGL and GLES modules and exports their public headers through `ANGLE.h`. Do not also manually link the old frameworks. The local-development manifest uses local binary paths; a fresh clone must build artifacts before resolving it. The release manifest in the repository root uses downloadable ZIP archives once a binary release is published.
 
 This is a binary-backed Swift package: GN/Ninja compile ANGLE, and SPM integrates the resulting XCFrameworks. SPM does not run GN during package resolution.
 
@@ -32,6 +32,6 @@ This is a binary-backed Swift package: GN/Ninja compile ANGLE, and SPM integrate
 python3 apple/scripts/package_release.py --tag apple-0.1.0
 ```
 
-This creates two ZIP archives, SHA-256 checksums, and `dist/Package.swift` with immutable GitHub release URLs. Upload the ZIP files to that tag's GitHub release, replace the root manifest with the generated manifest and commit/tag that distribution revision. Preserve `apple/SPM` at that revision. Never replace archive contents under an existing release tag: checksums are immutable. Keep the local-path manifest on a separate development branch if needed.
+This creates two ZIP archives, SHA-256 checksums, and `dist/Package.swift` with immutable GitHub release URLs. Upload the ZIP files to that tag's GitHub release, replace the root manifest with the generated manifest and commit/tag that distribution revision. Preserve `apple/SPM` at that revision. Never replace archive contents under an existing release tag: checksums are immutable. The reusable local-path template remains in `apple/Package.local.swift`.
 
 All original ANGLE licenses and third-party license notices remain in the source tree. Distribution frameworks include ANGLE's root LICENSE; downstream distributions must retain applicable third-party notices as well.

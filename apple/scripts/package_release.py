@@ -15,11 +15,11 @@ for name in ['libEGL', 'libGLESv2']:
     if archive.exists(): archive.unlink()
     subprocess.run(['ditto', '-c', '-k', '--sequesterRsrc', '--keepParent', str(source), str(archive)], check=True)
     checksums[name] = hashlib.sha256(archive.read_bytes()).hexdigest()
-manifest = (ROOT / 'Package.swift').read_text()
+manifest = (ROOT / 'apple/Package.local.swift').read_text()
 for name, checksum in checksums.items():
     local = f'.binaryTarget(name: "{name}", path: "dist/{name}.xcframework")'
     remote = f'.binaryTarget(name: "{name}", url: "https://github.com/{a.repository}/releases/download/{a.tag}/{name}.xcframework.zip", checksum: "{checksum}")'
-    if local not in manifest: raise SystemExit('Expected the local-development Package.swift template; restore it before generating a release manifest.')
+    if local not in manifest: raise SystemExit('Invalid apple/Package.local.swift template.')
     manifest = manifest.replace(local, remote)
 (artifacts / 'Package.swift').write_text(manifest)
 (artifacts / 'checksums.json').write_text(json.dumps(checksums, indent=2) + '\n')

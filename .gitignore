@@ -160,3 +160,5 @@ TestResults.qpa
 /.swiftpm/
 /dist/
 /_bad_scm/
+
+/dist-*/

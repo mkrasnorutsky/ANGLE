@@ -22,7 +22,7 @@ def prepare_framework(source, destination, name):
             text = re.sub(r'([<"])(EGL|KHR)/([^>"\n]+)([>"])', r'<libEGL/\3>', text)
             text = re.sub(r'([<"])(GLES2|GLES3)/([^>"\n]+)([>"])', r'<libGLESv2/\3>', text)
             (headers / original.name).write_text(text)
-    includes = ['egl.h', 'eglext.h'] if name == 'libEGL' else ['gl32.h', 'gl2ext.h']
+    includes = ['egl.h', 'eglext.h'] if name == 'libEGL' else ['gl2.h', 'gl3.h', 'gl31.h', 'gl32.h', 'gl2ext.h']
     (headers / (name + '.h')).write_text('#pragma once\n' + ''.join(f'#include <{name}/{header}>\n' for header in includes))
     modules = destination / 'Modules'; modules.mkdir(exist_ok=True)
     (modules / 'module.modulemap').write_text(f'framework module {name} {{\n umbrella header "{name}.h"\n export *\n module * {{ export * }}\n}}\n')
@@ -93,6 +93,22 @@ def main():
         command = ['xcodebuild', '-create-xcframework']
         for framework in frameworks: command += ['-framework', str(framework)]
         run(*command, '-output', artifact)
+    # Preserve upstream notices alongside redistributable binaries.
+    notices = output / 'Licenses'
+    if notices.exists(): shutil.rmtree(notices)
+    notices.mkdir()
+    shutil.copy2(ROOT / 'LICENSE', notices / 'ANGLE-LICENSE')
+    for directory, subdirs, files in os.walk(source / 'third_party'):
+        subdirs[:] = [x for x in subdirs if x not in ['.git', 'out', '__pycache__', 'node_modules']]
+        for filename in files:
+            if filename.upper().startswith(('LICENSE', 'COPYING', 'NOTICE')) or filename == 'README.chromium':
+                original = Path(directory) / filename
+                if original.is_file():
+                    destination = notices / 'third_party' / original.relative_to(source / 'third_party')
+                    destination.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(original, destination)
+    for name in ['libEGL', 'libGLESv2']:
+        shutil.copytree(notices, output / (name + '.xcframework') / 'Licenses')
     revision = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
     source_revision = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
     (output / 'build-manifest.json').write_text(json.dumps({'packaging_revision': revision, 'source_revision': source_revision, 'device_only': args.device_only, 'deployment_target': args.deployment_target, 'slices': list(built)}, indent=2) + '\n')
