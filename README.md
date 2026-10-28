@@ -1,6 +1,6 @@
 # ANGLE - Almost Native Graphics Layer Engine
 
-**Apple builds:** see [iOS XCFrameworks and Swift Package Manager](apple/README.md). Builds include arm64 devices and arm64/x86_64 Simulator.
+**Apple builds:** see [iOS XCFrameworks and Swift Package Manager](apple/README.md). Builds include arm64 devices and arm64/x86_64 Simulator. [Download release 0.1.0](https://github.com/mkrasnorutsky/ANGLE/releases/tag/0.1.0), or add this repository in Xcode as the **ANGLE** SPM product.
 
 The goal of ANGLE is to allow users of multiple operating systems to seamlessly run WebGL and other
 OpenGL ES content by translating OpenGL ES API calls to one of the hardware-supported APIs available
